@@ -1,4 +1,4 @@
-pragma solidity ^0.8.10;
+pragma solidity^0.8.15;
 
 contract ERC20  {
 	uint public totalSupply;
@@ -14,11 +14,13 @@ contract ERC20  {
 
 	uint public decimals = 1000000000000000000;
 
-		function transfer (address recipient, uint amount) external returns (bool) {
-			balanceOf[msg.sender] -= amount*decimals;
-			balanceOf [recipient] += amount*decimals;
-			return true;
-		}
+        function tokenName() view public returns(string memory){
+            return name;
+        }
+
+        function tokenSymbol() view public returns(string memory){
+            return symbol;
+        }
 
 		function addCoin(uint amount) public returns(uint){
 			return coin += amount;
@@ -26,6 +28,12 @@ contract ERC20  {
 
 		function removeCoin(uint amount) public returns(uint){
 			return coin -= amount;
+		}
+
+        function transfer (address recipient, uint amount) external returns (bool) {
+			balanceOf[msg.sender] -= amount*decimals;
+			balanceOf [recipient] += amount*decimals;
+			return true;
 		}
 
 		function getCoin() external view returns(uint){
