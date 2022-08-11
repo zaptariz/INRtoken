@@ -1,5 +1,6 @@
 const ERC20 = artifacts.require("ERC20");
 const decima = 1000000000000000000;
+var address = null;
 
 contract("ERC20", async (account) => {
 
@@ -12,6 +13,7 @@ contract("ERC20", async (account) => {
     it("Contract should be deployed", async () => {
         const ERC20Token = await ERC20.deployed();
         console.log(" ERC20Token.address : ", ERC20Token.address);
+        address = ERC20Token.address;
         assert(ERC20Token.address)
     })
     it("Currency and token should be Indian rupee and INR", async () => {
@@ -28,17 +30,22 @@ contract("ERC20", async (account) => {
         let decimalLength = BigInt(decimals);
         assert(decimalLength.toString() == decima)
     })
-    it("Token mint ", async () => {
+    it("Token should be mint ", async () => {
         await ERC20Token.mint(123);
         let TotalValue = await ERC20Token.viewTotalSUpply();
         assert(TotalValue == 123 * decima)
     })
 
-    // it("Token burn ", async () => {
-    //     await ERC20Token.burn(123);
-    //     let TotalValue = await ERC20Token.burn(123);
-    //     assert(TotalValue == (123*decima - 123*decima))
-    // })
+    it("Token should be burn ", async () => {
+        try{
+            await ERC20Token.burn(12);
+            let afterBurn = await ERC20Token.viewTotalSUpply();
+            assert((BigInt(afterBurn).toString()) == 111 * decima);
+        }
+        catch(error){
+            console.log(" error : message  : ", error.message)
+        }
+    })
 })
 
 const INR = artifacts.require("inrToken");
@@ -49,18 +56,21 @@ contract("INR Token", async (account) => {
     before(async () => {
         INRtoken = await INR.deployed();
     })
-    // console.log(account);
-    const [owner, ...otherAccounts] = account;
+
+    it("Set the address of the ERC20 contract address ", async () => {
+        let Address = await INRtoken.setAddress(address);
+        assert(Address)
+    })
+
     it("Coin should add", async () => {
         let addCoin = await INRtoken.addNewCoin(123);
     })
-    // it(" token should mint ", async ()=> {
-    //     await INRtoken.mintNewINRToken(10);
-    //     // console.log(" mint  : ", mint);
-    // })
-    it(" totalINRtoken", async () => {
+
+    it("Coin and token value should be equal always ", async () => {
+        await INRtoken.addNewCoin(123);
+        await INRtoken.mintNewINRToken(123);
         let totalINRtoken = await INRtoken.totalINRtoken();
-        console.log("totalINRtoken", totalINRtoken)
-    }
-    )
+        let coin = await INRtoken.Coin();
+        assert(coin * decima == totalINRtoken)
+    })
 })
