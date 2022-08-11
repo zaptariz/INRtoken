@@ -1,6 +1,6 @@
 pragma solidity^0.8.10;
 
-import "./ERC20x.sol";
+import "./ERC20.sol";
 
 contract inrToken {
     address addressOfAnotherContract;
@@ -22,10 +22,10 @@ contract inrToken {
 
     function mintNewINRToken(uint amount) public restriction(msg.sender) {
         ERC20 pointer = ERC20(addressOfAnotherContract);
-        uint temp1 = pointer.getCoin();
-        uint temp2 = temp1 += amount;
-        require(increaseCoin >= temp1," there is no new coin added ");
-        require(increaseCoin >= temp2 || increaseCoin == temp2 , " you were trying to mint extra token");
+        uint oldCoin = pointer.getCoin();
+        uint newlyAddedCoin = oldCoin += amount;
+        require(increaseCoin >= oldCoin," there is no new coin added ");
+        require(increaseCoin >= newlyAddedCoin || increaseCoin == newlyAddedCoin , " you were trying to mint extra token");
         pointer.addCoin(amount);
         pointer.mint(amount);
     }

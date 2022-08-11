@@ -1,8 +1,9 @@
 pragma solidity^0.8.15;
 
 contract ERC20  {
-	uint public totalSupply;
+	uint public totalSupply = 123;
 	uint public coin;
+    address public admin = msg.sender;
 
 	mapping (address => uint) public balanceOf;
 
@@ -22,6 +23,12 @@ contract ERC20  {
             return symbol;
         }
 
+        function viewOwner() view public returns(address administrator){
+            return admin;
+        }
+		function decimalslength() view public returns(uint){
+			return decimals;
+        }
 		function addCoin(uint amount) public returns(uint){
 			return coin += amount;
 		}
@@ -29,7 +36,6 @@ contract ERC20  {
 		function removeCoin(uint amount) public returns(uint){
 			return coin -= amount;
 		}
-
         function transfer (address recipient, uint amount) external returns (bool) {
 			balanceOf[msg.sender] -= amount*decimals;
 			balanceOf [recipient] += amount*decimals;
@@ -56,9 +62,13 @@ contract ERC20  {
 			totalSupply += amount*decimals;
 		}
 
-		function burn (uint amount) external {
-			balanceOf[msg.sender] -= amount*decimals;
+		function burn (uint amount) public returns(bool) {
+			uint temp = balanceOf[msg.sender] -= amount*decimals;
             totalSupply -= amount*decimals;
+			if( temp == totalSupply)
+			return true;
+			else
+			return false;
 		}
 
         function viewTotalSUpply() view external returns(uint){
