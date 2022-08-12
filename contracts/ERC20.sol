@@ -36,25 +36,9 @@ contract ERC20  {
 		function removeCoin(uint amount) public returns(uint){
 			return coin -= amount;
 		}
-        function transfer (address recipient, uint amount) external returns (bool) {
-			balanceOf[msg.sender] -= amount*decimals;
-			balanceOf [recipient] += amount*decimals;
-			return true;
-		}
 
 		function getCoin() public view returns(uint){
 			return coin;
-		}
-		function approve (address spender, uint amount) external returns (bool) {
-			allowance[msg.sender][spender] = amount*decimals;
-			return true;
-		}
-
-		function transferFrom(address sender,address recipient, uint amount) external returns (bool) {
-			allowance[sender] [msg.sender] -= amount*decimals;
-			balanceOf[sender] = amount*decimals;
-			balanceOf[recipient] += amount*decimals;
-			return true;
 		}
 
 		function mint (uint amount) public {
@@ -62,11 +46,22 @@ contract ERC20  {
 			totalSupply += amount*decimals;
 		}
 
-		function burn (uint amount) external {
-			balanceOf[msg.sender] -= amount * decimals;
-            totalSupply -= amount*decimals;
+		event Transfer(address indexed from, address indexed to, uint256 value);
+
+		function transfer (address recipient, uint amount) external returns (bool) {
+			assert(balanceOf[msg.sender] >= amount * decimals);
+			balanceOf[msg.sender] -= amount*decimals;
+			balanceOf [recipient] += amount*decimals;
+			emit Transfer(msg.sender, recipient, amount);
+			return true;
 		}
 
+		function burn (uint amount) external {
+			if(amount* decimals <=balanceOf[msg.sender]){
+				balanceOf[msg.sender] -= amount * decimals;
+				totalSupply -= amount*decimals;
+			}
+		}
         function viewTotalSUpply() view external returns(uint){
             return totalSupply;
         }

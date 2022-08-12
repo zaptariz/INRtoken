@@ -37,12 +37,12 @@ contract("ERC20", async (account) => {
     })
 
     it("Token should be burn ", async () => {
-        try{
+        try {
             await ERC20Token.burn(12);
             let afterBurn = await ERC20Token.viewTotalSUpply();
             assert((BigInt(afterBurn).toString()) == 111 * decima);
         }
-        catch(error){
+        catch (error) {
             console.log(" error : message  : ", error.message)
         }
     })
@@ -72,5 +72,10 @@ contract("INR Token", async (account) => {
         let totalINRtoken = await INRtoken.totalINRtoken();
         let coin = await INRtoken.Coin();
         assert(coin * decima == totalINRtoken)
+    })
+
+    it("Token should be transfer ", async () => {
+        let transaction = await INRtoken.transfer(account[4],13);
+        assert(transaction.receipt.status == true);
     })
 })
